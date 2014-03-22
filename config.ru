@@ -9,7 +9,26 @@ class App
   end
 
   def response
-    [200, {'Content-Type'=>'text/html'}, StringIO.new("all good here.")]
+    if credentials.valid?
+      [200, {'Content-Type'=>'text/plain'}, [ENV.fetch("SECRET")]]
+    else
+      [401, {'Content-Type'=>'text/plain'}, StringIO.new("you didn't say the magic word.")]
+    end
+  end
+
+  def request
+    @request ||= Rack::Request.new(@env)
+  end
+
+  def credentials
+    @credentials ||= Credentials.new(*request.body.read.split(":"))
+  end
+
+  Credentials = Struct.new(:username, :password) do
+    def valid?
+      username == ENV.fetch("USERNAME") \
+      && password == ENV.fetch("PASSWORD")
+    end
   end
 
 end
