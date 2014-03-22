@@ -12,7 +12,7 @@ class App
     if credentials.valid?
       [200, {'Content-Type'=>'text/plain'}, [ENV.fetch("SECRET")]]
     else
-      [401, {'Content-Type'=>'text/plain'}, StringIO.new("you didn't say the magic word.")]
+      [401, {'Content-Type'=>'image/gif'}, File.open("failed.gif")]
     end
   end
 
