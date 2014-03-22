@@ -24,10 +24,21 @@ class App
     @credentials ||= Credentials.new(*request.body.read.split(":"))
   end
 
+  def user_agent
+    @user_agent ||= UserAgent.new @env.fetch("HTTP_USER_AGENT")
+  end
+
   Credentials = Struct.new(:username, :password) do
     def valid?
       username == ENV.fetch("USERNAME") \
       && password == ENV.fetch("PASSWORD")
+    end
+  end
+
+  UserAgent = Struct.new(:user_agent) do
+    ACCEPTABLE = "Jurassic Systems inc.".freeze
+    def valid?
+      user_agent == ACCEPTABLE
     end
   end
 
